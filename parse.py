@@ -51,15 +51,18 @@ def parse_tmn_log(fname):
 
 if __name__=="__main__":
 	items1 = parse_proxy_log(sys.argv[1])
-	print "extracted from the proxy log ----------------"
-	print items1
+	if len(sys.argv) > 3 and sys.argv[3] == '-d':
+		print "extracted from the proxy log ----------------"
+		print items1
 	items2 = parse_tmn_log(sys.argv[2])
-	print "extracted from TMN log ----------------"
-	print items2
+	if len(sys.argv) > 3 and sys.argv[3] == '-d':
+		print "extracted from TMN log ----------------"
+		print items2
 	for e in items2:
 		tmp = filter(lambda x: x.query == e.query or x.time[3:] == e.time[3:], items1)
 		for i in tmp:
 			i.owner = "T"
-	print "After merging ............................"
+	if len(sys.argv) > 3 and sys.argv[3] == '-d':
+		print "After merging ............................"
 	for i in items1:
 		print i
