@@ -13,10 +13,7 @@ class entry:
 		return ', '.join([self.query, self.owner, self.time])
 
 def extra_format(text):
-	print text
-	text=urllib2.unquote(text)
-	text.replace('+',' ')
-	print text
+	text=urllib2.unquote(text).replace('+',' ')
 	return text
 	
 def remove_redundancy1(queries):
