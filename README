@@ -1,0 +1,12 @@
+
+Parsing part
+============
+1-To run the proxy install python and  python-twisted package. sudo apt-get install python-twisted
+2-Run the following command after installing the attached proxy2.py script
+	python ./proxy &
+3-The script will store the log in the same folder with the name log
+4-Direct your firefox traffic through the proxy by configuring your network settings as the following
+5-You can try getting the results by running 
+	python ./parse  PathToProxyLog/log PathToTMNLog/tmn_log.txt >> results.csv
+	The logic behind the merging method should be improved, but we can start with this version.
+
