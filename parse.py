@@ -3,6 +3,7 @@
 import sys
 import re
 import urllib2
+import string
 
 class entry:
 	def __init__(self,q="",t="",o="U"):
@@ -11,6 +12,11 @@ class entry:
 		self.owner = o
 	def __repr__(self):
 		return ', '.join([self.query, self.owner, self.time])
+
+def cleanup(text):
+	exclude = set(string.punctuation)
+	text = ''.join(ch for ch in text if ch not in exclude)
+	return text
 
 def extra_format(text):
 	text=urllib2.unquote(text).replace('+',' ')
@@ -54,15 +60,19 @@ if __name__=="__main__":
 	if len(sys.argv) > 3 and sys.argv[3] == '-d':
 		print "extracted from the proxy log ----------------"
 		print items1
+	
 	items2 = parse_tmn_log(sys.argv[2])
 	if len(sys.argv) > 3 and sys.argv[3] == '-d':
 		print "extracted from TMN log ----------------"
 		print items2
+	
 	for e in items2:
 		tmp = filter(lambda x: x.query == e.query or x.time[3:] == e.time[3:], items1)
 		for i in tmp:
 			i.owner = "T"
+	
 	if len(sys.argv) > 3 and sys.argv[3] == '-d':
 		print "After merging ............................"
+	
 	for i in items1:
-		print i
+		print cleanup(i.query)+", "+i.owner+", "+i.time
