@@ -19,7 +19,8 @@ def cleanup(text):
 	return text
 
 def extra_format(text):
-	text=urllib2.unquote(text).replace('+',' ')
+	text = urllib2.unquote(text).replace('+',' ')
+	text = text.replace("  "," ")
 	return text
 	
 def remove_redundancy1(queries):
