@@ -10,9 +10,10 @@ public class QueryFileReader {
 	private static String DISCO_REPO;
 	private static String DISCO_OPT;
 	private static final String DELIMITER = ",";
-	private static double scores[][];
+	private static long scores[][];
 	private static Vector<String> queries;
 	private static Vector<String> queryTypes;
+	private static final int PRECISION = 1000000000;
 	
 	public static void main(String[] args) {
 
@@ -60,14 +61,22 @@ public class QueryFileReader {
 		}
 		
 		/* Part 2: Compute scores for each query */
-		scores = new double[counter][counter];
+		scores = new long[counter][counter];
+		
+		/* Initialize scores */
+		for (int i = 0; i < counter; i++) {
+			for (int j = 0; j < counter; j++) {
+				scores[i][j] = -1;
+			}
+		}
 		
 		for (int i = 0; i < counter; i++) {
 			for (int j = 0; j < counter; j++) {
 				if (i == j)
-					scores[i][j] = 1;
-				else
-					scores[i][j] = calculateScore(queries.elementAt(i), queries.elementAt(j));
+					scores[i][j] = PRECISION;
+				else if (scores[j][i] == -1)
+					scores[i][j] = Math.round((PRECISION)*calculateScore(queries.elementAt(i), queries.elementAt(j)));
+				else scores[i][j] = scores[j][i];
 			}
 		}
 		
@@ -125,14 +134,10 @@ public class QueryFileReader {
 	}
 	
  	static void printScores() {
-		System.out.format("%10d ",-1);
-		for (int i = 0; i < queries.size(); i++)
-			System.out.format("%10d ",i);
-		System.out.println();
 		for (int i = 0; i < scores.length; i++) {
-			System.out.format("%s %8d ", queryTypes.get(i), i);
+			System.out.format("%s  ", queryTypes.get(i), i);
 			for (int j = 0; j < scores[i].length; j++) {
-				System.out.format("%1.8f ",scores[i][j]);
+				System.out.format("%10d ",scores[i][j]);
 			}
 			System.out.println();
 		}
