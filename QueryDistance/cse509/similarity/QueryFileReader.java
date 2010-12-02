@@ -5,10 +5,12 @@ import java.util.*;
 
 public class QueryFileReader {
 	private static final String QUERY_FILE_LOCATION = "inputs/queryFile.csv";
+	/*
 	private static final String DISCO_COMMAND = "java -jar ";
 	private static String DISCO_JAR;
 	private static String DISCO_REPO;
 	private static String DISCO_OPT;
+	*/
 	private static final String DELIMITER = ",";
 	private static long scores[][];
 	private static Vector<String> queries;
@@ -147,3 +149,4 @@ public class QueryFileReader {
 		}
 	}
 }
+
