@@ -35,7 +35,7 @@ int cluster(vector< vector<int> > &dists, vector<string> &labels,
 	for (int cNum = 1; cNum <= numClusters; cNum++) {
 		for (int i = 0; i < idxs.size(); ++i) {
 			if (idxs[i] == cNum) {
-				mat.label(idx, labels[i].compare("T") ? .6 : 0); // U=Blue, T=Red
+				mat.label(idx, labels[i].compare("T") ? .6 : 0); //U=Blue, T=Red
 				order[i] = idx++;
 			}
 		}
