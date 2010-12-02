@@ -105,7 +105,7 @@ public class QueryFileReader {
 		for (int i = 0; i < sWords.size(); i++) {
 			for (int j = 0; j < tWords.size(); j++) {
 				try {
-					child = Runtime.getRuntime().exec("./ngd.py" + sWords.get(i) + " " + tWords.get(j) + "2>> err");
+					child = Runtime.getRuntime().exec("./ngd.py " + sWords.get(i) + " " + tWords.get(j) + "2>> err");
 					int result = child.waitFor();
 					
 					if (result == 0) {
