@@ -1,33 +1,17 @@
 #include "PSMatrix.h"
 
 #define DEBUG true
-#define MIN_BB true
-#define RAND_COL false
-
 
 PSMatrix::PSMatrix(const int dim) : xx(dim), yy(dim), ll_x(0), ll_y(0), ur_x(BBOX), ur_y(BBOX) {
 	//we will draw the matrix in an 8in by 8in bounding box
 	data.resize(dim, vector<double>(dim, 0.0));
 	labels.resize(dim, 1.0); // 1 is white
 	cell_w = cell_h = BBOX / dim;
-	 
-	/*
-	cout << data.size() << " x " << data.front().size() << endl;
-	cout << "cell_w: " << cell_w << endl;
-
-	for(int i = 0; i < dim; i++){
-		for(int j = 0; j < dim; j++){
-			cout << " " << data[i][j];
-		}
-		cout << endl;
-	}
-	*/
 }
 
 PSMatrix::PSMatrix(const int dim_x, const int dim_y) : xx(dim_x), yy(dim_y), ll_x(0), ll_y(0), ur_x(BBOX), ur_y(BBOX) {
 	//we will draw the matrix in an 8in by 8in bounding box
 	data.resize(dim_x, vector<double>(dim_y, 0.0));
-	//label.resize(dim_x, vector<double>(dim_y, 0.0));
 	cell_w = BBOX / dim_x;
 	cell_h = BBOX / dim_y;
 }
@@ -52,16 +36,12 @@ bool PSMatrix::writeMatrix(std::ofstream &os){
 }
 
 void PSMatrix::printColor(const int x, const int y, std::ofstream &os){
-#if DEBUG
 	if(x >= xx || y >= yy)
 		os << 0 << " setgray" << std::endl; // 0 is black, 1 is white
 	else if (x == y)
 		os << labels[x] << " 1 1 sethsbcolor" << std::endl; 
 	else
 		os << (1-data[x][y]) << " setgray" << std::endl; // 0 is black, 1 is white
-#else
-	os << (1-data[x][y]) << " setgray" << std::endl; // 0 is black, 1 is white
-#endif
 }
 
 void PSMatrix::printSquare(const int x, const int y, std::ofstream &os){
@@ -110,38 +90,3 @@ void PSMatrix::set(const int x, const int y, const double value){
 void PSMatrix::label(const int i, const double val){
 	labels[i] = val;
 }
-/*
-int main(int argc, char **argv){
-
-	vector< vector<double> > data;
-	data.resize(10, vector<double>(10,0.0));
-	//
-	PSMatrix a(data);
-	double inc = .01;
-	double acc = 0;
-
-	for(int y = 0; y < 10; ++y){
-		for(int x = 0; x < 10; ++x){
-			a.set(x,y,acc);
-			acc += inc;
-		}
-	}
-
-
-//	bool flipflop = true;
-//	for(int i = 0; i < 10; ++i){
-//		for(int j = 0; j < 10; ++j){
-//			if(flipflop){
-//				a.set(i, j, 1);
-//				flipflop = false;
-//			} else {
-//				a.set(i, j, 0);
-//				flipflop = true;
-//			}
-//		}
-//	}
-
-	a.toPS(argv[1]);
-	return 0;
-}
-*/
