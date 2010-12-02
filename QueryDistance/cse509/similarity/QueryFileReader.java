@@ -71,17 +71,18 @@ public class QueryFileReader {
 		}
 		
 		for (int i = 0; i < counter; i++) {
+			System.out.format("%s  ", queryTypes.get(i), i);
 			for (int j = 0; j < counter; j++) {
 				if (i == j)
 					scores[i][j] = PRECISION;
 				else if (scores[j][i] == -1)
 					scores[i][j] = Math.round((PRECISION)*calculateScore(queries.elementAt(i), queries.elementAt(j)));
 				else scores[i][j] = scores[j][i];
+				
+				System.out.format("%10d ",scores[i][j]);
 			}
+			System.out.println();
 		}
-		
-		/* Part 3: Show scores */
-		printScores();
 	}
 	
 	static double calculateScore(String s, String t) {
