@@ -22,6 +22,7 @@ public class QueryFileReader {
 		queries = new Vector<String>();
 		queryTypes = new Vector<String>();
 		
+		/*
 		if (args.length != 3) {
 			System.out.println("Usage: java -jar Query.jar DISCO_JAR DISCO_REPO DISCO_OPT");
 			System.exit(1);
@@ -30,7 +31,8 @@ public class QueryFileReader {
 		DISCO_JAR = new String(args[0].toString());
 		DISCO_REPO = new String(args[1].toString());
 		DISCO_OPT = new String(args[2].toString());
-		
+		*/
+
 		/* Part 1: Read all input queries */
 		try {
 			bufferedReader = new BufferedReader(new FileReader(new File(QUERY_FILE_LOCATION)));
@@ -91,7 +93,8 @@ public class QueryFileReader {
 		for (int i = 0; i < sWords.size(); i++) {
 			for (int j = 0; j < tWords.size(); j++) {
 				try {
-					child = Runtime.getRuntime().exec(DISCO_COMMAND + " " + DISCO_JAR + " " + DISCO_REPO + " " + DISCO_OPT + " " + sWords.get(i) + " " + tWords.get(j));
+					//child = Runtime.getRuntime().exec(DISCO_COMMAND + " " + DISCO_JAR + " " + DISCO_REPO + " " + DISCO_OPT + " " + sWords.get(i) + " " + tWords.get(j));
+					child = Runtime.getRuntime().exec("./ngd.py " + sWords.get(i) + " " + tWords.get(j)+" 2>> err");
 					int result = child.waitFor();
 					
 					if (result == 0) {
