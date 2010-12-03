@@ -2,46 +2,29 @@ package cse509.similarity;
 
 import java.io.*;
 import java.util.*;
+import de.linguatools.disco.*;
 
-public class QueryFileReader {
-	private static final String QUERY_FILE_LOCATION = "inputs/queryFile.csv";
-	/*
-	private static final String DISCO_COMMAND = "java -jar ";
-	private static String DISCO_JAR;
-	private static String DISCO_REPO;
-	private static String DISCO_OPT;
-	*/
-	private static final String DELIMITER = ",";
-	private static long scores[][];
-	private static Vector<String> queries;
-	private static Vector<String> queryTypes;
-	private static final int PRECISION = 1000000000;
+public class QueryFileReader implements Constants {
+	private String DISCO_REPO;
+	private String DISCO_OPT;
+	private long scores[][];
+	private Vector<String> queries;
+	private Vector<String> queryTypes;
 	
-	public static void main(String[] args) {
-
+	QueryFileReader(String[] args) {
 		BufferedReader bufferedReader;
 		String line;
 		int counter = 0;
 		queries = new Vector<String>();
 		queryTypes = new Vector<String>();
 		
-		/*
-		if (args.length != 3) {
-			System.out.println("Usage: java -jar Query.jar DISCO_JAR DISCO_REPO DISCO_OPT");
-			System.exit(1);
-		}
-		
-		DISCO_JAR = new String(args[0].toString());
-		DISCO_REPO = new String(args[1].toString());
-		DISCO_OPT = new String(args[2].toString());
-		*/
+		System.out.println("Beginning to read the queries file.");
+		DISCO_REPO = new String(args[0].toString());
+		DISCO_OPT = new String(args[1].toString());
 		
 		/* Part 1: Read all input queries */
 		try {
 			bufferedReader = new BufferedReader(new FileReader(new File(QUERY_FILE_LOCATION)));
-			
-			//Read header of CSV
-			bufferedReader.readLine();
 			
 			while ((line = bufferedReader.readLine()) != null) {
 				//Extract Column 1 : Query
@@ -74,24 +57,39 @@ public class QueryFileReader {
 			}
 		}
 		
-		for (int i = 0; i < counter; i++) {
-			System.out.format("%s  ", queryTypes.get(i), i);
-			for (int j = 0; j < counter; j++) {
-				if (i == j)
-					scores[i][j] = PRECISION;
-				else if (scores[j][i] == -1)
-					scores[i][j] = Math.round((PRECISION)*calculateScore(queries.elementAt(i), queries.elementAt(j)));
-				else scores[i][j] = scores[j][i];
-				
-				System.out.format("%10d ",scores[i][j]);
+		System.out.println("Done.");
+	}
+	
+	private void iterateOverQueries() {
+		long counter = queries.size();
+		PrintStream p;
+		System.out.println("Beginning semantic processing....");
+		try {
+			p = new PrintStream(new File(MATRIX_FILE_LOCATION));
+			
+			for (int i = 0; i < counter; i++) {
+				p.format("%s ",queryTypes.get(i));
+				for (int j = 0; j < counter; j++) {
+					if (i == j)
+						scores[i][j] = PRECISION;
+					else if (scores[j][i] == -1)
+						scores[i][j] = Math.round((PRECISION)*calculateScore(queries.elementAt(i), queries.elementAt(j)));
+					else scores[i][j] = scores[j][i];
+					
+					p.format("%10d ", scores[i][j]);
+				}
+				p.println();
+				System.out.println("Semantic processing of Query: " + i);
 			}
-			System.out.println();
+			
+			p.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	static double calculateScore(String s, String t) {
-		String line = "";
-		Process child;
+	private double calculateScore(String s, String t) {
+		double score;
 		double maxScore = 0.0;
 		double aggregate = 0.0;
 		
@@ -100,24 +98,28 @@ public class QueryFileReader {
 		Vector<String> tWords = new Vector<String>();
 		sWords = tokenize(s);
 		tWords = tokenize(t);
-		
+				
 		/* Step 2: Compute the score between each word */
 		for (int i = 0; i < sWords.size(); i++) {
 			for (int j = 0; j < tWords.size(); j++) {
 				try {
-					child = Runtime.getRuntime().exec("./ngd.py " + sWords.get(i) + " " + tWords.get(j) + "2>> err");
-					int result = child.waitFor();
+					if (j%5 == 0)
+						Runtime.getRuntime().gc();
 					
-					if (result == 0) {
-						BufferedReader stdInput = new BufferedReader(new InputStreamReader(child.getInputStream()));
-						line = stdInput.readLine();
-						if (maxScore < Double.parseDouble(line))
-							maxScore = Double.parseDouble(line);
-					} else {
-						System.out.println("Error in process: " + child.toString());
-					}
-				} catch (Exception e) {
-					//Ignore 'Word Not Found'
+					DISCO d = new DISCO();
+					if (DISCO_OPT.equals("-s"))
+						score = d.firstOrderSimilarity(DISCO_REPO, sWords.get(i), tWords.get(j));
+					else
+						score = d.secondOrderSimilarity(DISCO_REPO, sWords.get(i), tWords.get(j));
+					
+					if (score != -1) {
+						if (maxScore < score)
+							maxScore = score;
+					} else
+						continue;
+				} catch (IOException e) {
+					System.out.println("IOException. word1 = " + sWords.get(i) + " word2 = " + tWords.get(j));
+					e.printStackTrace();
 				}
 			}
 			aggregate+=maxScore;
@@ -127,7 +129,7 @@ public class QueryFileReader {
 		return (double)aggregate/(double)(Math.max(sWords.size(), tWords.size()));
 	}
 	
-	static Vector<String> tokenize(String str) {
+	private Vector<String> tokenize(String str) {
 		Vector<String> v = new Vector<String>();
 		StringTokenizer st = new StringTokenizer(str);
 		
@@ -137,15 +139,15 @@ public class QueryFileReader {
 		
 		return v;
 	}
-	
- 	static void printScores() {
-		for (int i = 0; i < scores.length; i++) {
-			System.out.format("%s  ", queryTypes.get(i), i);
-			for (int j = 0; j < scores[i].length; j++) {
-				System.out.format("%10d ",scores[i][j]);
-			}
-			System.out.println();
+ 	
+	public static void main(String[] args) {
+
+		if (args.length != 2) {
+			System.out.println("Usage: java -jar Query.jar DISCO_REPO DISCO_OPT");
+			System.exit(1);
 		}
+		
+		QueryFileReader qfr = new QueryFileReader(args);
+		qfr.iterateOverQueries();
 	}
 }
-
