@@ -1,3 +1,4 @@
+#@author waleed tuffaha
 require 'rubygems'
 require 'net/http'
 
@@ -10,7 +11,7 @@ f = File.open('output', 'w')
 puts "Need to get #{to_get.length} queries ..!!"
 start_time = Time.now
 
-50000.times do
+500.times do
   threads << Thread.new do
     while q_word = to_get.pop
       puts "remaining #{to_get.length} words" if to_get.length % 50 == 0
