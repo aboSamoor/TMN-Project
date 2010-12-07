@@ -5,11 +5,10 @@ import xgoogle.search as s
 import sys
 import math
 import threading
-from twisted.internet import reactor
 from twisted.internet.defer import *
 from twisted.web.client import getPage
 from lxml.html import fromstring
-
+from twisted.internet import reactor
 
 results = []
 queries = []
@@ -66,13 +65,19 @@ def errorHandler(error):
 
 if __name__=="__main__":
 	queries = parse(sys.argv[1])
+	for query in queries:
+		print url(query)
 	args=[]
 	for i in range(len(queries)):
 		results.append([])
 		for j in range(len(queries)):
 			results[i].append(-1)
-	for i in range(20):
-		for j in range(i+1,20):
+	for i in range(len(queries)):
+		for j in range(len(queries)):
+				print url(queries[i]+queries[j])
+"""
+	for i in range(30):
+		for j in range(i+1,30):
 			if not cache.has_key(url(queries[i])):
 				d1 = getPage(url(queries[i]))
 				x = d1.addCallback(parse_page)
@@ -94,3 +99,5 @@ if __name__=="__main__":
 			gatherResults([x,y,z]).addCallback(store,i,j)
 			
 	reactor.run() 
+
+"""
