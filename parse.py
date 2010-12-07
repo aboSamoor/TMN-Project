@@ -57,23 +57,23 @@ def parse_tmn_log(fname):
 	return [entry(e[0][0],e[0][1],"T") for e in res]
 
 if __name__=="__main__":
-	items1 = parse_proxy_log(sys.argv[1])
+	proxy_qs = parse_proxy_log(sys.argv[1])
 	if len(sys.argv) > 3 and sys.argv[3] == '-d':
 		print "extracted from the proxy log ----------------"
-		print items1
+		print proxy_qs
 	
-	items2 = parse_tmn_log(sys.argv[2])
+	tmn_qs = parse_tmn_log(sys.argv[2])
 	if len(sys.argv) > 3 and sys.argv[3] == '-d':
 		print "extracted from TMN log ----------------"
-		print items2
+		print tmn_qs
 	
-	for e in items2:
-		tmp = filter(lambda x: x.query == e.query or x.time[3:] == e.time[3:], items1)
+	for e in tmn_qs:
+		tmp = filter(lambda x: x.query == e.query or x.time[3:] == e.time[3:], proxy_qs)
 		for i in tmp:
 			i.owner = "T"
 	
 	if len(sys.argv) > 3 and sys.argv[3] == '-d':
 		print "After merging ............................"
 	
-	for i in items1:
+	for i in proxy_qs:
 		print cleanup(i.query)+", "+i.owner+", "+i.time
