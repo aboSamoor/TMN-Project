@@ -1,0 +1,23 @@
+<project name="QueryDistance" default="build-jar" basedir=".">
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="dist" location="." />
+	<path id="QueryDistance.classpath">
+		<pathelement location="lib/disco-1.1.jar" />
+	</path>
+	<target name="init">
+		<mkdir dir="${build}" />
+	</target>
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${build}">
+			<classpath refid="QueryDistance.classpath" />
+		</javac>
+	</target>
+	<target name="build-jar" depends="compile">
+		<jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build}">
+			<manifest>
+				<attribute name="Main-Class" value="cse509.similarity.QueryFileReader" />
+			</manifest>
+		</jar>
+	</target>
+</project>

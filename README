@@ -10,3 +10,21 @@ Parsing part
 	python ./parse  PathToProxyLog/log PathToTMNLog/tmn_log.txt >> results.csv
 	The logic behind the merging method should be improved, but we can start with this version.
 
+QueryDistance using DISCO
+=========================
+Pre-conditions:
+1. A folder "inputs" with a file "queryFile.csv" in it. The "inputs" folder should be in the same folder as QueryRunnable.jar
+2. "queryFile.csv" should be a comma separated file with no Header, in the format [QUERY,TYPE,TIME] where TYPE can take values 'U' or 'T'
+
+Post-Conditions:
+1. A "matrix.csv" is created in the same folder as "QueryRunnable.jar"
+2. Any existing "matrix.csv" will be overwritten
+
+Command-line arguments:
+1. Location of the repository
+2. -s or -s2
+
+Example:
+$java -jar QueryRunnable.jar /home/nikhil/cse509/en_wikipedia-20080101 -s
+
+
