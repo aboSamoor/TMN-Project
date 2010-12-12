@@ -21,7 +21,7 @@ def get_qs(csvFile):
     filp = open(csvFile,'r')
     qs=filp.readlines()
     filp.close()
-    qs = [line[:-2] for line in qs]
+    qs = [line[:-1] for line in qs]
     return qs
 
 def parse_page(html):
@@ -45,7 +45,7 @@ class GspiderSpider(BaseSpider):
     def parse(self, response):
         if cache.has_key(response.url):
             print "!!! repeatition !!!"
-        elif "sorry.google.com" in url.response :
+        elif "sorry.google.com" in response.url:
             print "Goooooooooooooooooooogle"
         else:    
             text= response.url+","+parse_page(response.body)+"\n"
