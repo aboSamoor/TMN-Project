@@ -21,11 +21,24 @@ int cluster(vector< vector<int> > &dists, vector<string> &labels,
 #ifdef KMEANS
 	numClusters = r.pam(idxs, maxK);
 
+	/* use maxDist to scale the color [0,1] for eps output */
 	double maxDist = 0.0;
 	for(int i = 0; i < n; ++i)
 		for(int j = 0; j < n; ++j)
 			if(dists[i][j] > maxDist)
 				maxDist = (double)dists[i][j];
+
+	/* calculate the largest cluster, and how good our guesses are */
+	vector<int> counts(numClusters+1, 0);
+	vector<int> nReal(numClusters+1, 0);
+	for (int i = 0; i < idxs.size(); i++) {
+		counts[idxs[i]]++;
+		nReal[idxs[i]] += labels[i].compare("T");
+	}
+	for(int i = 0; i < counts.size(); i++){
+		cout << "cluster" << i << " size: " << counts[i] <<  " # real: " 
+			 << nReal[i] << endl;
+	}
 
 	/* Rearrange the points so that cluster members are together.
 	   Also add a classification label along the diagonal */
