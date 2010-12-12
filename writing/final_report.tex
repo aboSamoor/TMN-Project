@@ -78,7 +78,17 @@ TrackMeNot also attempts to simulate search patterns with ``selective click-thro
 
 \section{Design}
 \label{sec:design}
-Design.
+Our overall design can be logically divided into three parts. The first part deals with logging all user Google Search queries as well as those fired from TMN. The second part comprises the computation of a distance matrix on this set of queries using a suitable semantic distance measure. The last part consists of clustering this data using a suitable technique to get a visual representation of the data from which conclusions can be deduced.
+
+\subsection{Data Gathering}
+
+\subsection{Semantic Distance Metric}
+The basic idea here was to find how \textit{similar} each search query was to every other query, making no distinction based on its origin (user or TMN). To do this, we needed a \textit{semantic} distance metric. We did not implement our own metric, but instead explored the available choices from other research groups. After examining the feasibility of using different available metrics, we settled on two of them. One of them is DISCO\footnote{http://www.linguatools.de/disco/disco\_en.html}, which is a Java package, and the other is Google Normalized Distance. We describe both in the following sections. In each of these cases, we disabled the auto-complete feature of Google so that our search queries were always the exact phrases that the user or TMN requested from Google Search and never subsets of the actual queries.
+
+\subsubsection{DISCO}
+The DISCO (extracting DIStributionally related words using CO-occurrences) API allows to compute the semantic similarity between any two words by looking up those words in a pre-defined repository. For our analysis, we downloaded the Wikipedia repository available on the DISCO website to compute the distances. By looking up this local repository, the DISCO API returns a value between 0 and 1 for any pair of words that it looks up in the repository, such that the higher the value returned, the more similar the words are. In this sense, the API works like a similarity measure. We were however faced with one issue: Google search queries are typically phrases, and not single words. To overcome this, given two queries $Q1$ and $Q2$, we compared each word in $Q1$ with every word in $Q2$ and in each case chose the highest retured value. We aggregated this score over all words in $Q1$ and normalized the addition by dividing the aggregate score by the number of words in $Q1$.
+
+\subsubsection{Google Normalized Distance}
 
 \subsection{Clustering}
 \label{sec:clustering}
