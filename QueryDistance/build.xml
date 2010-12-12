@@ -9,7 +9,7 @@
 		<mkdir dir="${build}" />
 	</target>
 	<target name="compile" depends="init">
-		<javac srcdir="${src}" destdir="${build}">
+		<javac srcdir="${src}" destdir="${build}" includeantruntime="true">
 			<classpath refid="QueryDistance.classpath" />
 		</javac>
 	</target>
