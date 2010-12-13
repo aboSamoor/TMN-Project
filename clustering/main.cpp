@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 
 
    /* this is a hack: necessary because similarity is backwards in
-	   our calculations. 0 should be identical, not 1000000000 */
+	  our calculations. 0 should be identical, not 1000000000 */
    for(int i = 0; i < n; ++i) {
 	   for (int j = 0; j < n; ++j) {
 		   if(i != j) {
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 		   }
 	   }
    }
-   
+
    cout << "Output filename (.eps): ";
    cin >> output;
 
