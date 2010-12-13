@@ -141,7 +141,7 @@ if __name__=="__main__":
                 z = cache[urls[i][j-i].url] +2
             else:
                 z = 2
-            results[i][j] = eq(x,y,z)
+            results[i][j] = math.fabs(eq(x,y,z))
             results[j][i] = results[i][j]
     filp = open('result', 'w')
     tags = [urls[i][0].owner for i in range(n)]
