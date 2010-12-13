@@ -1,4 +1,3 @@
-%\documentclass[11pt, twocolumn]{article}
 \documentclass[11pt]{article}
 \usepackage{multicol}
 \usepackage{pslatex}
@@ -15,7 +14,7 @@
 \usepackage[left=1in,top=1.2in,right=1in,bottom=1in]{geometry}
 
 \textwidth 6.5in
-\textheight 8.8in
+\textheight 9in
 
 \title{TrackMeNot-so-good-after-all}
 \author{Rami Al-Rfou' \\{\texttt{ralrfou@cs.stonybrook.edu}}
@@ -31,12 +30,13 @@
 \begin{abstract}
   TrackMeNot is a Firefox plugin with laudable intentions - protecting
   your privacy. By issuing a customizable stream of random search
-  queries on its users' behalf, TrackMeNot surmises that enough ``search
-  noise'' will prevent the users' true query profiles from being
-  discerned. However, we find that clustering queries by semantic
-  relatedness allows us to disentangle a nontrivial subset of user
-  queries from TrackMeNot issued noise.
+  queries on its users' behalf, TrackMeNot surmises that enough
+  ``search noise'' will prevent the users' true query profiles from
+  being discerned. However, we find that clustering queries by
+  semantic relatedness allows us to disentangle a nontrivial subset of
+  user queries from TrackMeNot issued noise.
 \end{abstract}
+
 \begin{multicols}{2}
 \section{Background}
 \label{sec:background}
@@ -49,15 +49,18 @@ The decreasing cost of persistant media for storage, coupled with the
 steady rise in E-commerce, social networking, and various other online
 services, has led to a dramatic increase in the volume of readily
 available, personally identifiable information. One often overlooked
-source of such information is the logging by search engines of user
-queries.
+source of such information is the logging of user queries by search
+engines.
 
 There have been several high-profile examples of search query data
-being used in inappropriate ways, most notably an incident involving AOL in 2006 \cite{aol}. The company disclosed a data set comprised of  information from 658,000
-subscribers' search histories; it was released as a flat file into the public
-domain. Upon admitting their error, they removed the link, but the data was already mirrored elsewhere. This incident highlights just how personally revealing search
-engine queries can be, as at least one user was identified using only
-the content of her searches %\cite{user957}.
+being used in inappropriate ways, most notably an incident involving
+AOL in 2006 \cite{aol}. The company disclosed a data set comprised of
+information from 658,000 subscribers' search histories; it was
+released as a flat file into the public domain. Upon admitting their
+error, they removed the link, but the data was already mirrored
+elsewhere. This incident highlights just how personally revealing
+search engine queries can be, as at least one user was identified
+using only the content of her searches \cite{user4417749}.
 
 The average internet user may browse under the false impression that
 deleting cookies or diverting traffic through a proxy will protect
@@ -162,19 +165,82 @@ package from the R statistical programming language\cite{Rcluster}.
 Our classification strategy is a simple one. It is not our goal to show that every user query can be discerned from those queries issued by TrackMeNot. What we want to show is that some nonempty subset of user queries can be identified as ``real'' with high probability. For this task, we simply choose the single largest cluster or set of clusters, and label all constituent members as user-generated queries.
 
 \subsection{Validation}
+We have compiled and performed testing on four data sets, containing
+both user and TrackMeNot generated searches. The data sets are
+summarized in the following table.
 
+\bigskip
+\begin{centering}
+    \begin{tabular}{ | l | l | l |}
+    \hline
+    {\bf Data Set} & {\bf \# Queries} & {\bf Similarity Measure} \\ \hline
+    \texttt{bill.m} & 131 & Disco Wikipedia \\ \hline
+    \texttt{nikhil.m} & 305 & Disco Wikipedia \\ \hline
+    \texttt{rami.m} & 600 & Disco Wikipedia \\ \hline
+    \end{tabular}
+\end{centering}
+\bigskip
+
+As you can see, our data sets vary in number of queries. This was
+intentional, as it allows us to test the effect of window size; data
+in the larger sets spans multiple sessions.
+
+To validate our classifier, we first computed a similarity matrix
+using the Disco Wikipedia distance measure. From this matrix, we
+performed clustering using PAM, as decribed in Section
+\ref{sec:clustering}. Our classifier then identifed the largest
+cluster or set of clusters, assigning the label `U' to these
+queries. We finally compare the assigned label against the real value
+to calculate the precision and recall over our validation set.
 
 \section{Results}
 \label{sec:results}
 
-Results. \cite{tmn}
+Our results are very promising. We are able to successfully label.
 
-  \begin{figure}[h]
+  \begin{figure*}[h]
     \centering
-    \includegraphics[width=\columnwidth]{clusterbill1}
-    \caption{Clustering of bills data.}
-    \label{fig:cluster.bill}
-  \end{figure}
+    \includegraphics[width=\linewidth]{disco_bill_131}
+    \caption{A pictorial representation of the \texttt{bill.mat}
+      clustering. Position $(i,j)$ represents the similarity between
+      query $i$ and query $j$ - the lighter the shade, the more
+      similar the queries are. The query class is displayed along the
+      diagonal. If $(i,i)$ is red, then query $i$ was generated by
+      TrackMeNot. If $(i,i)$ is blue, then the query is genuine. We
+      see that many queries are semantically unrelated. The largest
+      cluster, however has 10 user queries and 0 TrackMeNot queries.}
+    \label{fig:disco.bill}
+  \end{figure*}
+
+  \begin{figure*}[h]
+    \centering
+    \includegraphics[width=\linewidth]{disco_rami_305}
+    \caption{A pictorial representation of the \texttt{rami.mat}
+      clustering. Position $(i,j)$ represents the similarity between
+      query $i$ and query $j$ - the lighter the shade, the more
+      similar the queries are. The query class is displayed along the
+      diagonal. If $(i,i)$ is red, then query $i$ was generated by
+      TrackMeNot. If $(i,i)$ is blue, then the query is genuine. We
+      see that many queries are semantically unrelated. The largest
+      cluster, however has 13 user queries and 2 TrackMeNot queries.}
+    \label{fig:disco.rami}
+  \end{figure*}
+
+
+  \begin{figure*}[h]
+    \centering
+    \includegraphics[width=\linewidth]{disco_nikhil_600}
+    \caption{A pictorial representation of the \texttt{nikhil.mat}
+      clustering. Position $(i,j)$ represents the similarity between
+      query $i$ and query $j$ - the lighter the shade, the more
+      similar the queries are. The query class is displayed along the
+      diagonal. If $(i,i)$ is red, then query $i$ was generated by
+      TrackMeNot. If $(i,i)$ is blue, then the query is genuine. We
+      see that many queries are semantically unrelated. The largest
+      cluster, however has 4 user queries and 9 TrackMeNot queries.}
+    \label{fig:disco.nikhil}
+  \end{figure*}
+
 
 \section{Conclusions}
 \label{sec:conc}
@@ -190,13 +256,13 @@ By operating as a Firefox plugin, TrackMeNot does not protect against search eng
 \bibliography{final_report}
 \end{multicols}
 \newpage
-\begin{appendix} \label{appendix}
-\section*{Appendix:}
-{\tiny
-\begin{verbatim}
-Appendix info.
-\end{verbatim}
-}
-\end{appendix}
+%\begin{appendix} \label{appendix}
+%\section*{Appendix:}
+%{\tiny
+%\begin{verbatim}
+%Appendix info.
+%\end{verbatim}
+%}
+%\end{appendix}
 
 \end{document}
