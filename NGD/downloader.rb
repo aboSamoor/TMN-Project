@@ -1,6 +1,7 @@
 #@author waleed tuffaha
 require 'rubygems'
 require 'net/http'
+require 'uri'
 
 cache = {}
 threads = []
@@ -16,15 +17,19 @@ start_time = Time.now
     while q_word = to_get.pop
       puts "remaining #{to_get.length} words" if to_get.length % 50 == 0
       if !cache[q_word]
-        if res = Net::HTTP.get('www.google.com', "/search?q=#{q_word}").match(/About ([\d+,*]+?) results/)
+        q_parsed = URI.parse(q_word)
+        if res = Net::HTTP.get(q_parsed.host, q_parsed.request_uri).match(/About ([\d+,*]+?) results/)
             tmp = res.captures.first.gsub(",","")
             cache[q_word] = tmp
-            f.puts "#{q_word.chop},#{tmp}"
+            f.flock(File::LOCK_EX)
+            f.puts "#{q_word.chop},#{tmp}\n"
+            f.flock(File::LOCK_UN)
+        end
         end
       end
     end 
- end
 end
+
 
 threads.each { |x| x.join }
 puts "finished in #{Time.now - start_time}"
