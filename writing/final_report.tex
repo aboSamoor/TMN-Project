@@ -136,10 +136,13 @@ The DISCO (extracting DIStributionally related words using CO-occurrences) API a
 \subsection{Google Normalized Distance}
 \label{sec:gnd}
 Google Normalized Distance (GND) is a semantic similarity based on statistics. GND has a large set of vocabulary. The similarity can be calculated according to the following equation:
-\begin{equation}
+
+\begin{eqnarray}
 \label{eq:gnd}
-GND(Q1, Q2) = \frac{Max(\log f(Q1), \log f(Q2))-\log f(Q1, Q2))}{\log N - Min(\log f(Q1), \log f(Q2))}
-\end{equation} 
+GND(Q1, Q2) =& \nonumber \\
+&\frac{Max(\log f(Q1), \log f(Q2))-\log f(Q1, Q2))}{\log N - Min(\log f(Q1), \log f(Q2))}
+\end{eqnarray}
+
 where $f(Q)$ is the number of results found by Google for query $Q$, and $f(Q1, Q2)$ denotes the number of results found by google for the combined query of $Q1$ and $Q2$.
 The more the two queries appear together the smaller the distance between them. GND is not an accurate function to measure the distance\cite{DBLP:GND}. Moreover, GND is not a metric nor it satisfies the triangle inequality, and $GND(x, y)$ is not larger than 0 for every $x \neq y$. 
 
