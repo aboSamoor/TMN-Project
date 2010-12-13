@@ -136,7 +136,7 @@ Google Normalized Distance (GND) is a semantic similarity based on statistics. G
 GND(Q1, Q2) = \frac{Max(\log f(Q1), \log f(Q2))-\log f(Q1, Q2))}{\log N - Min(\log f(Q1), \log f(Q2))}
 \end{equation} 
 where $f(Q)$ is the number of results found by Google for query $Q$, and $f(Q1, Q2)$ denotes the number of results found by google for the combined query of $Q1$ and $Q2$.
-The more the two queries appear together the smaller the distance between them. GND is not an accurate function to measure the distance. Moreover  GND is not a metric nor it satisfies the triangle inequality. First, $GND(x, y)$ is not larger than 0 for every $x \neq y$ \cite{DBLP:NGD}. 
+The more the two queries appear together the smaller the distance between them. GND is not an accurate function to measure the distance\cite{DBLP:GND}. Moreover, GND is not a metric nor it satisfies the triangle inequality, and $GND(x, y)$ is not larger than 0 for every $x \neq y$. 
 
 
 
@@ -208,4 +208,4 @@ Appendix info.
 }
 \end{appendix}
 
-
+\end{document}
