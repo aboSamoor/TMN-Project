@@ -1,9 +1,8 @@
-\documentclass[11pt]{article}
+\documentclass{llncs}
 \usepackage{multicol}
 \usepackage{pslatex}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{mathrsfs}
 \usepackage{algorithmic}
@@ -31,10 +30,10 @@
   TrackMeNot is a Firefox plugin with laudable intentions - protecting
   your privacy. By issuing a customizable stream of random search
   queries on its users' behalf, TrackMeNot surmises that enough
-  ``search noise'' will prevent the users' true query profiles from
+  ``search noise'' will prevent its users' true query profiles from
   being discerned. However, we find that clustering queries by
   semantic relatedness allows us to disentangle a nontrivial subset of
-  user queries from TrackMeNot issued noise.
+  true user queries from TrackMeNot issued noise.
 \end{abstract}
 
 \begin{multicols}{2}
@@ -69,23 +68,33 @@ protection. If a user wishes to utilize certain services such as
 Google Mail, they must log in to their personal profile. Once logged
 in, their queries are then tied to their account.
 
-TrackMeNot is a Firefox plugin that aims to protect the privacy of its users by issuing random queries on their behalf. These random queries are pulled from a variety of sources, with the intuition that providing enough ``noise'' around a user's true search patterns will make it impossible to disentangle the queries made by TrackMeNot from those actually made by human searchers.
+TrackMeNot is a Firefox plugin that aims to protect the privacy of its
+users by issuing random queries on their behalf. These random queries
+are pulled from a variety of sources, with the intuition that
+providing enough ``noise'' around a user's true search patterns will
+make it impossible to disentangle the queries made by TrackMeNot from
+those actually made by human searchers.
 
 \section{TrackMeNot details}
 \label{sec:tmn}
-TrackMeNot operates completely on the client side as a Firefox plugin. Upon start-up, an initial {\it seed list} is populated from RSS feeds and known public ``popular search'' lists. During execution, queries are pulled from this list and issued to popular search engines on the user's behalf.
+TrackMeNot operates completely on the client side as a Firefox
+plugin. Upon start-up, an initial {\it seed list} is populated from
+RSS feeds and known public ``popular search'' lists. During execution,
+queries are selected from this list and issued to designated search engines
+on the user's behalf.
 
 The user is offered many parameters, which can be tuned to customize
 TrackMeNot behavior. For instance, the user can select which, if any,
 popular search engines he wishes TrackMeNot to query on his behalf. If
 the user only performs searches at \url{http://www.Google.com}, he can
-specify that TrackMeNot query only  that site as well. The user can
+specify that TrackMeNot query only that site as well. The user can
 also specify the frequency of TrackMeNot queries (the default average
-query rate is 10 queries per hour), as well as whether or not to enable {\it query
-bursts}. Query bursts are triggered by actual user queries; when
-TrackMeNot detects a genuine query, it responds by issuing a batch of
-simulated searches. In a subset of query bursts, a longer query is
-selected and permuted to form a set of potentially similar searches.
+query rate is 10 queries per hour), as well as whether or not to
+enable {\it query bursts}. Query bursts are triggered by actual user
+queries; when TrackMeNot detects a genuine query, it responds by
+issuing a batch of simulated searches. In a subset of query bursts, a
+longer query is selected and permuted to form a set of potentially
+similar searches.
 
 The basis of the TrackMeNot model is its {\it dynamic query
   list}. Starting from the initial seed list, queries are randomly
@@ -116,29 +125,71 @@ aspect of the TrackMeNot design we wish to exploit.
 \label{sec:design}
 Our overall design can be logically divided into three parts. The
 first part deals with logging all user Google Search queries as well
-as those fired from TMN. The second part comprises the computation of
-a similarity matrix on this set of queries using a suitable semantic
-distance measure. The last part consists of clustering this data using
-a suitable technique to get a visual representation of the data from
-which conclusions can be deduced.
+as those fired from TrackMeNot. The second part comprises the
+computation of a similarity matrix on this set of queries using a
+suitable semantic distance measure. The last part consists of
+clustering this data using a suitable technique to get a visual
+representation of the data from which conclusions can be deduced.
 
 \section{Data Gathering}
-To gather the data we ran TMN with the default behaviors of 10 queries per hour with burst queries enabled; we also enabled the logging feature and disabled the other search engines, focusing on Google only. Moreover, we disabled the instant search feature as it produces incomplete queries. However, this does not give Google a chance to distinguish TMN queries as they appear as inserted by the keyboard. On the Google side, we made a new Google account, \textbf{cse509tmn}, and enabled the web history for verification.
+To gather the data we ran TrackMeNot with the default behaviors of 10
+queries per hour with burst queries enabled; we also enabled the
+logging feature and disabled the other search engines, focusing on
+Google only. Moreover, we disabled the instant search feature as it
+produces incomplete queries. However, this does not give Google a
+chance to distinguish TrackMeNot queries as they appear as inserted by
+the keyboard. On the Google side, we made a new Google account,
+\textbf{cse509tmn}, and enabled the web history for verification.
 
-To collect the user queries we implemented a proxy server that logged all the HTTP requests made by the browser. With the help of the TMN log, we were able to distinguish between the user queries and the ones generated by TMN.
+To collect and label queries, we implemented a proxy server to log all
+HTTP requests made by the browser. By collating the proxy log
+with the TrackMeNot log, we were able to differentiate between the
+user queries and those generated by TrackMeNot.
 
-The plugin was running for at least 3 days on three machines with three different users. Data was compiled over different periods for each user.
+The plugin was running for at least 3 days on three machines with
+three different users. Data was compiled over different periods for
+each user.
 
 \section{Semantic Distance Measure}
-The basic idea here was to find how \textit{similar} each search query was to every other query, making no distinction based on its origin (user or TMN). To do this, we needed a \textit{semantic} distance measure. We did not implement our own measure, but instead explored the available choices from other research groups. After examining the feasibility of using different available measures, we settled on two of them. One of them is DISCO\footnote{http://www.linguatools.de/disco/disco\_en.html}, which is a Java package, and the other is Google Normalized Distance. For descriptions, see sections \ref{sec:disco} and \ref{sec:gnd} respectively. In each of these cases, we disabled the auto-complete feature of Google so that our search queries were always the exact phrases that the user or TMN requested from Google Search and never subsets of the actual queries.
+The basic idea here was to find how \textit{similar} each search query
+was to every other query, making no distinction based on its origin
+(user or TrackMeNot). To do this, we needed a \textit{semantic}
+distance measure. We did not implement our own measure, but instead
+explored the available choices from other research groups. After
+examining the feasibility of using different available measures, we
+settled on two of them. One of them is
+DISCO\footnote{http://www.linguatools.de/disco/disco\_en.html}, which
+is a Java package, and the other is Google Normalized Distance. For
+details, see sections \ref{sec:disco} and \ref{sec:gnd}
+respectively. In each of these cases, we disabled the auto-complete
+feature of Google so that our search queries were always the exact
+phrases that the user or TrackMeNot requested from the Google Search
+Engine and never prefixes of the actual queries.
 
 \subsection{DISCO}
 \label{sec:disco}
-The DISCO (extracting DIStributionally related words using CO-occurrences) API allows to compute the semantic similarity between any two words by looking up those words in a pre-defined repository. For our analysis, we downloaded the Wikipedia repository available on the DISCO website to compute the distances. By looking up this local repository, the DISCO API returns a value between 0 and 1 for any pair of words that it looks up in the repository, such that the higher the value returned, the more similar the words are. In this sense, the API works like a similarity measure. We were however faced with one issue: Google search queries are typically phrases, and not single words. To overcome this, given two queries $Q1$ and $Q2$, we compared each word in $Q1$ with every word in $Q2$ and in each case chose the highest returned value. We aggregated this score over all words in $Q1$ and normalized the addition by dividing the aggregate score by the number of words in $Q1$.
+The DISCO (extracting DIStributionally related words using
+CO-occurrences) API allows to compute the semantic similarity between
+any two words by looking up those words in a pre-defined
+repository. For our analysis, we downloaded the Wikipedia repository
+available on the DISCO website to compute the distances. By looking up
+this local repository, the DISCO API returns a value between 0 and 1
+for any pair of words that it looks up in the repository, such that
+the higher the value returned, the more similar the words are. In this
+sense, the API works like a similarity measure. We were however faced
+with one issue: Google search queries are typically phrases, and not
+single words. To overcome this, given two queries $Q1$ and $Q2$, we
+compared each word in $Q1$ with every word in $Q2$ and in each case
+chose the highest returned value. We aggregated this score over all
+words in $Q1$ and normalized the addition by dividing the aggregate
+score by the number of words in $Q1$.
 
 \subsection{Google Normalized Distance}
 \label{sec:gnd}
-Google Normalized Distance (GND) is a measure of semantic similarity based on statistics. GND utilizes an extremely large vocabulary set. The similarity can be calculated according to the following equation:
+Google Normalized Distance (GND) is a measure of semantic similarity
+based on statistics. GND utilizes an extremely large vocabulary
+set. The similarity can be calculated according to the following
+equation:
 
 \begin{eqnarray}
 \label{eq:gnd}
@@ -146,38 +197,65 @@ GND(Q1, Q2)=%& \nonumber \\
 &\frac{Max(\log f(Q1), \log f(Q2))-\log f(Q1, Q2))}{\log N - Min(\log f(Q1), \log f(Q2))}
 \end{eqnarray}
 
-where $f(Q)$ is the number of results found by Google for query $Q$, and $f(Q1, Q2)$ denotes the number of results found by Google for the combined query of $Q1$ and $Q2$.
-The more often two queries appear together, the smaller the distance between them. GND is not an accurate function to measure the distance\cite{DBLP:GND}. Moreover, GND is not a metric nor does it satisfy the triangle inequality, and $GND(x, y)$ is not larger than 0 for every $x \neq y$. 
+where $f(Q)$ is the number of results found by Google for query $Q$,
+and $f(Q1, Q2)$ denotes the number of results found by Google for the
+combined query of $Q1$ and $Q2$.  The more often two queries appear
+together, the smaller the distance between them. GND is not an
+accurate function to measure the distance\cite{DBLP:GND}. Moreover,
+GND is not a metric nor does it satisfy the triangle inequality, and
+$GND(x, y)$ is not larger than 0 for every $x \neq y$.
 
 \section{Disentangling user queries}
 \label{sec:disentangle}
-Once we have created a matrix of semantic similarities, we are tasked
+Once we create a matrix of semantic similarities, we are tasked
 with deciding which queries were actually made by the user. We first
 perform cluster analysis to identify groups of related queries. We
-then use the size and distribution of the cluster assignments to label a
-set of user queries.
+then use the size and distribution of the cluster assignments to classify
+a set of user queries.
 
 \subsection{Clustering}
 \label{sec:clustering}
-For clustering we use the partitioning around medoids algorithm
+For clustering we use the Partitioning Around Medoids algorithm
 (PAM). It is conceptually similar to the well known $k$-means
 algorithm; however, rather than minimize squared Euclidean distances,
 it aims to minimize dissimilarity \cite{Kaufmann1990}. 
 
-An ideal assignment of $n$ objects into clusters would be an assignment that minimizes cluster widths while maximizing cluster separations. In other words, each element $i$ belonging to a cluster $A$ should be closely related the other members of cluster $A$. At the same time, each element $i$ in cluster $A$ should be unrelated to the members of all other clusters $C : C \neq A$; individual clusters should be well separated from other clusters.
+An ideal assignment of $n$ objects into clusters would be an
+assignment that minimizes cluster widths while maximizing cluster
+separations. In other words, each element $i$ belonging to a cluster
+$A$ should be closely related the other members of cluster $A$. At the
+same time, each element $i$ in cluster $A$ should be unrelated to the
+members of all other clusters $C$ such that $C \neq A$; individual clusters
+should be well separated from other clusters.
 
-Formally, we let $a(i)$ denote the average dissimilarity between an element $i$ and all elements in $i$'s cluster, $A$. Let $d(i,C)$ denote the average similarity between an element $i$ and all element's in a cluster $C$ to which $i$ does not belong: $C \neq A$. If we let $b(i)$ be the minimum $d(i,C) : C \neq A$, then
+Formally, for an element $i$ in a cluster $A$, let $a(i)$ denote the
+average dissimilarity between $i$ and all elements $j \in A$ where $j\neq
+i$. Let $d(i,C)$ denote the average similarity between an element $i$
+and all element's in a cluster $C$ to which $i$ does not belong: $C
+\neq A$. If we let $b(i)$ be the minimum $d(i,C)$ such that $C \neq
+A$, then
 
 \[ s(i) = \frac{b(i)-a(i)}{\max{(a(i),b(i))}} \]
 
-is a good indicator to the quality of element $i$'s cluster assignment. If $s(i)$ is close to one, then $i$ is well assigned. If $s(i)$ is close to negative one, then $i$ is poorly assigned. $s(i)$ is known as the silhouette width. Choosing a number of clusters, $k$, that maximize the average silhouette width is the heuristic used to determine the cluster assignments \cite{Kaufmann1990}.
+\noindent is a good indicator to the quality of element $i$'s cluster
+assignment. If $s(i)$ is close to one, then $i$ is well assigned. If
+$s(i)$ is close to negative one, then $i$ is poorly assigned. $s(i)$
+is known as the Silhouette width. Choosing the number of clusters, $k$,
+that maximizes the average Silhouette width is the heuristic used to
+determine the cluster assignments \cite{Kaufmann1990}.
 
 For our implementation of the PAM algorithm, we use the cluster
 package from the R statistical programming language\cite{Rcluster}.
 
 \subsection{Classification}
 \label{sec:classification}
-Our classification strategy is a simple one. It is not our goal to show that every user query can be discerned from those queries issued by TrackMeNot. What we want to show is that some nonempty subset of user queries can be identified as ``real'' with high probability. For this task, we simply choose the single largest cluster (or set of clusters in the case of a tie), and label all constituent members as user-generated queries.
+Our classification strategy is a simple one. It is not our goal to
+show that every user query can be discerned from those queries issued
+by TrackMeNot. What we want to show is that some nonempty subset of
+user queries can be identified as ``real'' with high probability. For
+this task, we simply choose the single largest cluster (or set of
+clusters in the case of a tie), and label all constituent members as
+user-generated queries.
 
 \subsection{Validation}
 We have compiled and performed testing on four data sets, containing
@@ -197,20 +275,20 @@ summarized in the following table.
 \end{centering}
 \bigskip
 
-As you can see, our data sets vary greatly in size (number of
-queries). This was intentional, as it allows us to test the
-effectiveness of our classification strategy in both small and large
-window sizes. Data in the larger sets spans multiple sessions over
-multiple days. The \texttt{test.m} and \texttt{bill.m} data sets are taken
-from a user's search engine use over a single day.
+As you can see, our data sets, intentionally, vary greatly in size
+(number of queries). This allows us to test the effectiveness of our
+classification strategy in both small and large window sizes. Data in
+the larger sets span multiple sessions over multiple days. The
+\texttt{test.m} and \texttt{bill.m} data sets are taken from a user's
+search engine use over a single day.
 
-To validate our classifier, we first computed a similarity matrix
+To validate our classifier, we first compute a similarity matrix
 using the Disco Wikipedia distance measure. From this matrix, we
 performed clustering using PAM, as described in Section
 \ref{sec:clustering}. Our classifier then identified the largest
 cluster or set of clusters, assigning the label `U' to these
 queries. We finally compare the assigned label against the real value
-to calculate the precision and recall over our validation set.
+to calculate the precision and recall over our validation data set.
 
 \section{Results}
 \label{sec:results}
@@ -336,7 +414,7 @@ other queries, and no clusters are found.
 
 For small windows, our classifier performs well. We achieve perfect
 precision in the \texttt{test.m} and \texttt{bill.m} data sets. But as
-our window size grows, our precision declines. 
+our window size grows, we observe declining precision. 
 
 Intuitively this decline makes sense.  TrackMeNot does seed its
 dynamic query list with multiple entries from an individual source, so
@@ -347,12 +425,11 @@ window size increases, so does the coverage of TrackMeNot's query
 list. We do not see poor performance for large windows as a cause for
 concern. Rather, it confirms the reasoning behind our strategy.
 
-We also find that the Google normalized distance measure is not
-applicable to full queries, as it was used in this paper. Any
-calculations must be performed on a per word basis. It is beyond the
-scope of this paper to identify key words from a query string, but we
-have identified this as a potential of future work.
 
+We also find that the Google Normalized Distance did not serve as a good
+distance measure when applied to full queries. If we instead used it
+per word in each query, and aggregated the distance for each word in
+each query like in DISCO, we could get a better measure.
 
 \section{Future work}
 \label{sec:future}
