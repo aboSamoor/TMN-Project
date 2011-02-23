@@ -1,0 +1,3 @@
+key = ""
+cx = "" 
+bossID = ""
