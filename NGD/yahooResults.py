@@ -38,10 +38,11 @@ def worker():
         item = Q.get()
         res = engine.get(item)
         if res != '':
-            print threading.current_thread().name, item, res
+            #print threading.current_thread().name, item, res
             Q.task_done()
-            if Q.qsize%1000 == 0:
+            if Q.qsize()%1000 == 0:
                 engine.save()
+                print Q.qsize()
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
