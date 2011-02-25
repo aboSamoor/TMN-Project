@@ -40,6 +40,8 @@ def worker():
         if res != '':
             print threading.current_thread().name, item, res
             Q.task_done()
+            if Q.qsize%1000 == 0:
+                engine.save()
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
@@ -48,9 +50,9 @@ if __name__ == "__main__":
     if os.path.isfile(sys.argv[2]):
         fName = os.path.abspath(sys.argv[2])
         for line in open(fName, 'r').read().splitlines():
-            q = '+'.join(sorted(line.split(' ')))
+            q = '+'.join(sorted(filter(lambda x: x,line.split(' '))))
             Q.put(q)
-        for i in range(10):
+        for i in range(100):
             t = threading.Thread(target=worker)
             t.daemon = True
             t.start()
