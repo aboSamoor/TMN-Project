@@ -122,7 +122,7 @@ void Rcluster::psMatrix(const char* outfile){
 		PSMatrix mat(ord.size());
 		for(int i = 0; i < ord.size(); ++i) 
 			for(int j = 0; j < ord.size(); ++j)
-				mat.set(i, j, dists[ord[i]-1][ord[j]-1] / maxDist);
+				mat.set(i, j, 1 - (dists[ord[i]-1][ord[j]-1] / maxDist));
 		mat.toPS(outfile);
 		
 		

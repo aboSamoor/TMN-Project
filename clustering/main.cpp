@@ -57,7 +57,7 @@ int cluster(vector< vector<int> > &dists, vector<string> &labels,
 	/* Input actual matrix values, normalized */
 	for(int i = 0; i < idxs.size(); ++i) 
 		for(int j = 0; j < idxs.size(); ++j)
-			mat.set(order[i],order[j], dists[i][j] / maxDist);
+			mat.set(order[i],order[j], 1 - (dists[i][j] / maxDist));
 	mat.toPS(output.c_str());
 #else
 	r.diana(idxs, maxK);
