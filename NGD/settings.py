@@ -1,3 +1,3 @@
-key = ""
-cx = "" 
-bossID = ""
+key = "AIzaSyAnupT8pNVHf2WFPidvMcmdrfXgt6RoM0w"
+cx = "017576662512468239146:omuauf_lfve"
+bossID = "KH3KZEzV34FJwNe.IhF80mRxK_83AsDQ2B1XUMlqXYijk38zOf.Y9FG5nmGYwvcu8fSyTTJFUgzS1Ar2KwHVokbuLrHlhFs-"

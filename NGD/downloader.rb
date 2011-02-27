@@ -13,7 +13,7 @@ f = File.open('output', 'w')
 puts "Need to get #{to_get.length} queries ..!!"
 start_time = Time.now
 
-1000.times do
+100.times do
   threads << Thread.new do
     while q_word = to_get.pop
       puts "remaining #{to_get.length} words" if to_get.length % 50 == 0
